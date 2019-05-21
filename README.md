@@ -1,6 +1,7 @@
 # course_web
 ## 前言
 PS. 如果这个项目有帮助到你，请留下小星星（点个Star，不胜感激orz)
+
 一个 Java Spring mvc写的选课系统。帮一个做助教的同学做的课程大作业，作业要求如下图示：
 
 ![project_req](doc_file/project_req.jpg)
