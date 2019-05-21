@@ -40,7 +40,6 @@ public class StudentController {
     public String chooseCourse(HttpServletRequest request,HttpServletResponse response,Model model){
         Student student=(Student)request.getSession().getAttribute("student");
         List<TimetableInfo> timetableInfoList=TimetableDao.getAllTimetableInfo();
-        model.addAttribute("timetableListSize",timetableInfoList.size());
         model.addAttribute("timetableInfoList",timetableInfoList);
         model.addAttribute("username",student.getName());
         return "student/selectCourses";
@@ -55,7 +54,6 @@ public class StudentController {
     public String selectedCourses(HttpServletRequest request,HttpServletResponse response,Model model){
         int studentID=(int)request.getSession().getAttribute("student_id");
         List<TimetableInfo> timetableInfoList=TimetableDao.getTimetableInfoByStudentID(studentID);
-        model.addAttribute("timetableListSize",timetableInfoList.size());
         model.addAttribute("timetableInfoList",timetableInfoList);
         String username=request.getSession().getAttribute("user").toString();
         model.addAttribute("username",username);
@@ -117,7 +115,26 @@ public class StudentController {
         return resMap;
     }
 
-
+    /**
+     * 异步处理退课
+     * @param request
+     * @param response
+     * @param timetableID
+     * @return
+     */
+    @RequestMapping(path = "cancelSelectedCourse")
+    @ResponseBody
+    public Map cancelSelectedCourse(HttpServletRequest request,HttpServletResponse response,@RequestParam("timetable_id") int timetableID){
+        Map<String,Object> resMap =new ConcurrentHashMap();
+        int currentStudentID=(int)request.getSession().getAttribute("student_id");
+        CourseRecord record=new CourseRecord();
+        record.setStudentID(currentStudentID);
+        record.setTimetableID(timetableID);
+        String res=CourseRecordDao.deleteCourseRecord(record);
+        resMap.put("success",res);
+        resMap.put("cancel-data",record);
+        return resMap;
+    }
 
 
 

@@ -57,6 +57,9 @@ public class TimetableDao{
         StringBuffer selectedTimetableIdStr=new StringBuffer("(");
         List<Integer> selectedTimetableIdList=CourseRecordDao.getTimeTableIDsByStudentID(studentID);
         int lSize=selectedTimetableIdList.size();
+        if(lSize<1){
+            return null;
+        }
         for (int i = 0; i < lSize-1; i++) {
             selectedTimetableIdStr.append(selectedTimetableIdList.get(i)+",");
         }

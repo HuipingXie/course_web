@@ -45,6 +45,35 @@ public class CourseRecordDao{
     }
 
     /**
+     * 删除选课记录，即退课操作，record携带的参数为student_id 和timetable_id
+     * @param record
+     * @return
+     */
+    public static String deleteCourseRecord(CourseRecord record){
+        String resString="删除失败";
+        //如果老师已经分配分数，则不删除
+        CourseRecord searchRecord=getCouRecByTimetableIdAndStuId(record.getTimetableID(),record.getStudentID());
+        if(searchRecord.getScore()!=-1){
+            return "不能退课，老师已打分！";
+        }
+        Connection con=GetMySQLConnection.getConnection();
+        try {
+            PreparedStatement pSQL=con.prepareStatement(
+                    "delete from `course_record` where timetable_id=? and student_id=?"
+            );
+            pSQL.setInt(1,record.getTimetableID());
+            pSQL.setInt(2,record.getStudentID());
+            pSQL.executeUpdate();
+            resString="success";
+        }catch (Exception e){
+            resString=e.getMessage();
+        }
+        GetMySQLConnection.closeConnection(con);
+        return resString;
+    }
+
+
+    /**
      * 通过课表id和学生id获取选课记录,通过方法返回的结果判断用户是否已经选课了
      * @param timetableID 课表id
      * @param studentID 学生id
@@ -61,7 +90,12 @@ public class CourseRecordDao{
      * @return
      */
     public static CourseRecord getCourseRecordBySQL(String sql){
-        CourseRecord record=getCourseRecordListBySQL(sql).get(0);
+        CourseRecord record;
+        try {
+            record=getCourseRecordListBySQL(sql).get(0);
+        }catch (Exception e){
+            record=new CourseRecord();
+        }
         return  record;
     }
 

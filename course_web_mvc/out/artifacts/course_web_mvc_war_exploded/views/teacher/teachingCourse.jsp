@@ -108,7 +108,7 @@
                         <td class="center">${ti.courseTime}</td>
                         <td class="center">
                             <a href="inputScore?timetable_id=${ti.timetableID}" class="btn btn-success">录入成绩</a>
-                            <a href="electiveSituation?timetable_id=${ti.timetableID}" class="btn btn-success">查看学生</a>
+                            <a href="electiveSituation?timetable_id=${ti.timetableID}" class="btn btn-info">查看学生</a>
                         </td>
                     </tr>
                 </c:forEach>

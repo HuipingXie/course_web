@@ -15,7 +15,7 @@
     <meta name="author" content="">
     <link rel="icon" href="../statics/icon/favicon.ico">
 
-    <title>选课</title>
+    <title>已选课程</title>
 
     <!-- Bootstrap core CSS -->
 
@@ -96,7 +96,7 @@
 
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
 
-            <h4>选课</h4>
+            <h4>已选课程</h4>
             <div class="row m-2"></div>
             <table class="table table-striped table-bordered table-hover" id="example">
                 <thead>
@@ -109,7 +109,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <c:forEach  items="${timetableInfoList}" var="ti" varStatus="loop">
+                <c:forEach  items="${timetableInfoList}" var="ti">
                     <tr class="odd gradeX">
                         <td>
                             <a href="courseInfo?timetable_id=${ti.timetableID}">${ti.course.courseName}</a>
@@ -118,7 +118,8 @@
                         <td>${ti.classroom}</td>
                         <td class="center">${ti.courseTime}</td>
                         <td class="center">
-                            ${ti.courseOrder}
+                            <button class="btn btn-success cancel-course">退课</button>
+                            <input type="text" value="${ti.timetableID}" class="timetable-id" hidden>
                         </td>
                     </tr>
                 </c:forEach>
@@ -131,6 +132,74 @@
         </main>
     </div>
 </div>
+
+<div class="modal fade" id="successModel" tabindex="-1" role="dialog" aria-labelledby="myModalLabelSuccess" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabelSuccess">
+
+                </h4>
+            </div>
+            <div class="modal-body">
+                退课成功!
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+<div class="modal fade" id="failModel" tabindex="-1" role="dialog" aria-labelledby="myModalLabelFail" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title">
+
+                </h4>
+            </div>
+            <div class="modal-body" id="myModalLabelFail">
+                退课失败
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+
+<script>
+    $(document).ready(function() {
+        $('.cancel-course').click(function () {
+            var this_demo=$(this);
+            var timetable_id=this_demo.next().val();
+            $.post("cancelSelectedCourse",{
+                    timetable_id:timetable_id
+                },
+                function(data,status){
+                    if(data.success=="success"){
+                        console.log(this_demo.next().val());
+                        this_demo.parent().parent().remove();
+                        $("#successModel").modal("show");
+                    }else{
+                        $("#myModalLabelFail").html(data.success);
+                        $("#failModel").modal("show");
+                    }
+                });
+        });
+    } );
+
+</script>
 
 
 
